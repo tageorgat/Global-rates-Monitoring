@@ -22,8 +22,8 @@ MASTER_DATA_CSV_PATH = CACHE_DIR / "rates_history.csv"
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
-MIN_HISTORY_START = "2000-01-01"
-DEFAULT_HISTORY_START = "2000-01-01"
+MIN_HISTORY_START = "2015-01-01"
+DEFAULT_HISTORY_START = "2015-01-01"
 
 
 
