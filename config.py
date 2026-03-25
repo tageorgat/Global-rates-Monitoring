@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-APP_TITLE = "Global Rates Monitor V3"
+APP_TITLE = "Global Rates Tracker"
 APP_SUBTITLE = "Historical monitoring with local cache, safer refreshes, and spread analytics"
 DEFAULT_LOOKBACK_DAYS = 365 * 5
 DATE_FMT = "%Y-%m-%d"
