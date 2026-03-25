@@ -7,7 +7,6 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
-
 def fmt_pct(value: Optional[float], digits: int = 2) -> str:
     if value is None or pd.isna(value):
         return "—"
@@ -39,7 +38,7 @@ def ensure_datetime(df: pd.DataFrame, col: str = "date") -> pd.DataFrame:
 
 def filter_from_start_date(
     df: pd.DataFrame,
-    start_date: str | date = "2000-01-01",
+    start_date: str | date = "2019-01-01",
     date_col: str = "date",
 ) -> pd.DataFrame:
     out = df.copy()
@@ -50,36 +49,46 @@ def filter_from_start_date(
     return out[out[date_col] >= start_ts].copy()
 
 
+def monthly_axis_config(month_count: int | None = None) -> dict:
+    # Reduce x-axis clutter depending on date span
+    if month_count is None or month_count <= 18:
+        dtick = "M1"
+    elif month_count <= 36:
+        dtick = "M2"
+    elif month_count <= 72:
+        dtick = "M3"
+    else:
+        dtick = "M6"
 
-def monthly_axis_config():
     return {
         "tickformat": "%b %Y",
-        "dtick": "M1",
+        "dtick": dtick,
         "ticklabelmode": "period",
+        "tickangle": -90,
+        "showgrid": False,
     }
 
 
-def apply_standard_timeseries_layout(fig: go.Figure, y_title: str = "Rate (%)") -> go.Figure:
+def apply_standard_timeseries_layout(
+    fig: go.Figure,
+    y_title: str = "Rate (%)",
+    month_count: int | None = None,
+) -> go.Figure:
     fig.update_layout(
-        height=520,
-        xaxis_title="Month",
-        yaxis_title=y_title,
+        height=540,
         hovermode="x unified",
-        margin=dict(l=20, r=20, t=50, b=20),
+        margin=dict(l=20, r=20, t=90, b=40),
+        title=dict(y=0.97),
         legend=dict(
             orientation="h",
             yanchor="bottom",
-            y=1.02,
+            y=1.06,
             xanchor="left",
             x=0,
+            title=None,
         ),
+        xaxis_title="Month",
+        yaxis_title=y_title,
     )
-    fig.update_xaxes(**monthly_axis_config())
+    fig.update_xaxes(**monthly_axis_config(month_count=month_count))
     return fig
-
-def monthly_axis_config() -> dict:
-    return {
-        "tickformat": "%b %Y",
-        "dtick": "M1",
-        "ticklabelmode": "period",
-    }
