@@ -4,6 +4,8 @@ from datetime import date, datetime, timezone
 from typing import Optional
 
 import pandas as pd
+import plotly.graph_objects as go
+
 
 
 def fmt_pct(value: Optional[float], digits: int = 2) -> str:
@@ -47,6 +49,33 @@ def filter_from_start_date(
     start_ts = pd.Timestamp(start_date)
     return out[out[date_col] >= start_ts].copy()
 
+
+
+def monthly_axis_config():
+    return {
+        "tickformat": "%b %Y",
+        "dtick": "M1",
+        "ticklabelmode": "period",
+    }
+
+
+def apply_standard_timeseries_layout(fig: go.Figure, y_title: str = "Rate (%)") -> go.Figure:
+    fig.update_layout(
+        height=520,
+        xaxis_title="Month",
+        yaxis_title=y_title,
+        hovermode="x unified",
+        margin=dict(l=20, r=20, t=50, b=20),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="left",
+            x=0,
+        ),
+    )
+    fig.update_xaxes(**monthly_axis_config())
+    return fig
 
 def monthly_axis_config() -> dict:
     return {
