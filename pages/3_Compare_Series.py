@@ -6,7 +6,10 @@ import streamlit as st
 
 from config import DEFAULT_COMPARE_CODES, DEFAULT_HISTORY_START, MIN_HISTORY_START
 from services import get_master_data_cached
-from utils import filter_from_start_date, monthly_axis_config
+from utils import (
+    apply_standard_timeseries_layout,
+    filter_from_start_date,
+)
 
 st.title("Compare Series")
 st.caption("Compare up to 3 tracked rates over time.")
@@ -19,9 +22,7 @@ if data.empty:
 
 data = data.copy()
 data["date"] = pd.to_datetime(data["date"], errors="coerce")
-data = data.dropna(subset=["date", "value"])
-
-# Global floor from 2000 onward
+data = data.dropna(subset=["date", "value"]).copy()
 data = filter_from_start_date(data, start_date=MIN_HISTORY_START, date_col="date")
 
 series_meta = (
@@ -37,9 +38,9 @@ default_codes = [c for c in DEFAULT_COMPARE_CODES if c in available_codes]
 if not default_codes:
     default_codes = available_codes[:3]
 
-c1, c2 = st.columns([2, 1])
+controls_col1, controls_col2 = st.columns([2, 1])
 
-with c1:
+with controls_col1:
     selected_codes = st.multiselect(
         "Select up to 3 series",
         options=available_codes,
@@ -48,7 +49,7 @@ with c1:
         max_selections=3,
     )
 
-with c2:
+with controls_col2:
     max_allowed = data["date"].max().date()
     start_date = st.date_input(
         "Start date",
@@ -68,7 +69,6 @@ if chart_df.empty:
     st.warning("No data available for the selected date range.")
     st.stop()
 
-# Monthly detail: keep month-end / month-start level for cleaner charting
 monthly_df = (
     chart_df.set_index("date")
     .groupby("metric_name")["value"]
@@ -83,17 +83,10 @@ fig = px.line(
     x="date",
     y="value",
     color="metric_name",
-    markers=False,
+    title="Compare selected series",
 )
 
-fig.update_layout(
-    xaxis_title="Month",
-    yaxis_title="Rate (%)",
-    legend_title="Series",
-    hovermode="x unified",
-)
-
-fig.update_xaxes(**monthly_axis_config())
+fig = apply_standard_timeseries_layout(fig, y_title="Rate (%)")
 
 st.plotly_chart(fig, use_container_width=True)
 
