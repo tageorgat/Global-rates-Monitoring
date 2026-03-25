@@ -139,6 +139,19 @@ def _load_boe(cfg: RateConfig, last_success_date=None) -> pd.DataFrame:
     return _decorate(df, cfg)
 
 
+BOF_EURIBOR_URL = (
+    "https://www.suomenpankki.fi/en/statistics/interest-rates-and-exchange-rates/"
+    "euribor-rates/"
+)
+
+BOF_EURIBOR_COLUMN_MAP = {
+    "EURIBOR_1M": "1 month",
+    "EURIBOR_3M": "3 month",
+    "EURIBOR_6M": "6 month",
+    "EURIBOR_12M": "12 month",
+}
+
+
 def _load_euribor(cfg: RateConfig, last_success_date=None) -> pd.DataFrame:
     res = requests.get(BOF_EURIBOR_URL, timeout=REQUEST_TIMEOUT, headers=USER_AGENT)
     res.raise_for_status()
@@ -150,7 +163,7 @@ def _load_euribor(cfg: RateConfig, last_success_date=None) -> pd.DataFrame:
     if not tables:
         raise ValueError("No tables found on Bank of Finland Euribor page")
 
-    target_label = BOF_EURIBOR_COLUMN_MAP.get(cfg.code)
+    target_label = BOF_EURIBOR_COLUMN_MAP.get(cfg.source_series) or BOF_EURIBOR_COLUMN_MAP.get(cfg.code)
     if target_label is None:
         raise ValueError(f"Unsupported Euribor code: {cfg.code}")
 
@@ -158,8 +171,6 @@ def _load_euribor(cfg: RateConfig, last_success_date=None) -> pd.DataFrame:
 
     for table in tables:
         cols = [str(c).strip() for c in table.columns]
-
-        # Try to find the table that contains Date + Euribor tenors
         has_date = any("date" in c.lower() for c in cols)
         has_target = any(target_label.lower() in c.lower() for c in cols)
 
@@ -209,7 +220,6 @@ def _load_euribor(cfg: RateConfig, last_success_date=None) -> pd.DataFrame:
         df = df[df["date"].dt.date > last_success_date].copy()
 
     return _decorate(df, cfg)
-
 
 def generate_sample_history() -> pd.DataFrame:
     """
