@@ -98,47 +98,12 @@ TRACKED_RATES: list[RateConfig] = [
 
     # Euribor: keep source_kind the same if your loader still routes on it,
     # but use clean series identifiers that match cfg.code / tenor logic.
-    RateConfig(
-        "EURIBOR_1M",
-        "Euribor 1M",
-        "Money Market",
-        "Eurozone",
-        "1M",
-        "Bank of Finland",
-        "euribor_html",
-        "EURIBOR_1M",
-    ),
-    RateConfig(
-        "EURIBOR_3M",
-        "Euribor 3M",
-        "Money Market",
-        "Eurozone",
-        "3M",
-        "Bank of Finland",
-        "euribor_html",
-        "EURIBOR_3M",
-    ),
-    RateConfig(
-        "EURIBOR_6M",
-        "Euribor 6M",
-        "Money Market",
-        "Eurozone",
-        "6M",
-        "Bank of Finland",
-        "euribor_html",
-        "EURIBOR_6M",
-    ),
-    RateConfig(
-        "EURIBOR_12M",
-        "Euribor 12M",
-        "Money Market",
-        "Eurozone",
-        "12M",
-        "Bank of Finland",
-        "euribor_html",
-        "EURIBOR_12M",
-    ),
-
+    
+   RateConfig("EURIBOR_1M", "Euribor 1M", "Money Market", "Eurozone", "1M", "Bank of Finland", "euribor_html", "EURIBOR_1M"),
+   RateConfig("EURIBOR_3M", "Euribor 3M", "Money Market", "Eurozone", "3M", "Bank of Finland", "euribor_html", "EURIBOR_3M"),
+   RateConfig("EURIBOR_6M", "Euribor 6M", "Money Market", "Eurozone", "6M", "Bank of Finland", "euribor_html", "EURIBOR_6M"),
+   RateConfig("EURIBOR_12M", "Euribor 12M", "Money Market", "Eurozone", "12M", "Bank of Finland", "euribor_html", "EURIBOR_12M"),
+    
     RateConfig(
         "DE_10Y",
         "Germany 10Y Government Bond Yield",
