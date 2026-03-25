@@ -6,10 +6,7 @@ import streamlit as st
 
 from config import DEFAULT_COMPARE_CODES, DEFAULT_HISTORY_START, MIN_HISTORY_START
 from services import get_master_data_cached
-from utils import (
-    apply_standard_timeseries_layout,
-    filter_from_start_date,
-)
+from utils import apply_standard_timeseries_layout, filter_from_start_date
 
 st.title("Compare Series")
 st.caption("Compare up to 3 tracked rates over time.")
@@ -86,7 +83,8 @@ fig = px.line(
     title="Compare selected series",
 )
 
-fig = apply_standard_timeseries_layout(fig, y_title="Rate (%)")
+month_count = monthly_df["date"].nunique()
+fig = apply_standard_timeseries_layout(fig, y_title="Rate (%)", month_count=month_count)
 
 st.plotly_chart(fig, use_container_width=True)
 
