@@ -4,3 +4,4 @@ numpy>=1.26,<3
 plotly>=5.20,<6
 requests>=2.31,<3
 setuptools==80.9.0
+pyarrow>=17,<19
